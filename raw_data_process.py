@@ -3,6 +3,7 @@ import sys
 import pickle
 import string
 from nltk.tokenize import word_tokenize
+from random import shuffle
 
 from config import *
 
@@ -59,30 +60,51 @@ def filter_stopwords(tokens, stopwords):
     return words
 
 
-def clean_rawtext(sentences):
-    results = []
-    for sentence in sentences:
-        if isinstance(sentence, str):
-            tokens = word_tokenize(sentence)
-        tokens = [token.lower() for torken in tokens]
-        tokens = filter_punctuations(tokens)
-        tokens = filter_non_alphabet(tokens)
-        tokens = filter_stopwords(tokens)
-        results.append(tokens)
-    return results
+def clean_rawtext(sentence, stopwords):
+    if isinstance(sentence, str):
+        tokens = word_tokenize(sentence)
+    if isinstance(sentence, list):
+        tokens = sentence
+    else:
+        assert  True, "Invalid type of sentence!"
+    tokens = [token.lower() for token in tokens]
+    tokens = filter_punctuations(tokens)
+    tokens = filter_non_alphabet(tokens)
+    tokens = filter_stopwords(tokens, stopwords)
+    return tokens
 
-def load_trainingset(nm_cmts_path, sr_cmts_path, stopwords):
-    assert isvalid_text_file(nm_cmts_path), 'Invalid training normal comments!'
-    assert isvalid_text_file(sr_cmts_path), 'Invalid training sara comments!'
+
+def load_dataset(nm_cmts_path, sr_cmts_path, stopwords):
+    assert isvalid_text_file(nm_cmts_path), 'Invalid normal comments!'
+    assert isvalid_text_file(sr_cmts_path), 'Invalid sara comments!'
 
     nm_cmts = []
     with open(nm_cmts_path, 'r') as f:
         lines = f.readlines()
+        print(len(lines))
         for line in lines:
             line = line.replace('\n','')
-            line_tokens = word_tokenize(line)
-
+            tokens = clean_rawtext(line, stopwords)
+            nm_cmts.append([0,tokens])
+    print(len(nm_cmts))
+    sr_cmts = []
+    with open(sr_cmts_path, 'r') as f:
+        lines = f.readlines()
+        print(len(lines))
+        for line in lines:
+            line = line.replace('\n','')
+            tokens = clean_rawtext(line, stopwords)
+            sr_cmts.append([0,tokens])
+    print(len(sr_cmts))
+    dataset = nm_cmts + sr_cmts
+    shuffle(dataset)
+    return dataset
 
 dicts = build_dict(DICT)
 stopwords = build_stopwords(STWORDS)
-
+training_set = load_dataset(TRAINING_NORMAL_CMT,TRAINING_SARA_CMT,stopwords)
+with open(TRAINING_DATASET, 'wb+') as f:
+    pickle.dump(training_set,f)
+testing_set = load_dataset(TEST_NORMAL_CMT,TEST_SARA_CMT, stopwords)
+with open(TESTING_DATASET, 'wb+') as f:
+    pickle.dump(testing_set,f)

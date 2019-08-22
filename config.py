@@ -13,7 +13,14 @@ TRAINING_NORMAL_CMT = os.path.join(TRAINING_DIR,'normal_comments.txt')
 TRAINING_SARA_CMT = os.path.join(TRAINING_DIR,'sara_comments.txt')
 
 TEST_DATA = os.path.join(DATA_DIR,'test_data')
-TEST_NORMAL_CMT = os.path.join(TEST_DATA,'normal_comments.txt')
-TEST_SARA_CMT = os.path.join(TEST_DATA,'sata_comments.txt')
+TEST_NORMAL_CMT = os.path.join(TEST_DATA,'nornal_comments.txt')
+TEST_SARA_CMT = os.path.join(TEST_DATA,'sara_comments.txt')
+
+DATASETS = os.path.join(ROOT_DIR,'datasets')
+if not os.path.isdir(DATASETS):
+    os.mkdir(DATASETS)
+TRAINING_DATASET = os.path.join(DATASETS,'training_dataset.bin')
+TESTING_DATASET = os.path.join(DATASETS,'testing_dataset.bin')
 
 
+MAX_LEN = []

@@ -8,3 +8,7 @@ data/*
 .vscode/
 .vscode/*
 .vscode
+*.bin
+datasets/
+datasets
+datasets/*
