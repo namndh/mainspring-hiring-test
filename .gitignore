@@ -12,3 +12,6 @@ data/*
 datasets/
 datasets
 datasets/*
+.idea
+.idea/
+.idea/*
