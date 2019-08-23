@@ -55,7 +55,12 @@ def filter_non_alphabet(tokens):
     return words
 
 
-def filter_stopwords(tokens, stopwords):
+def filter_indo_stopwords(tokens, stopwords):
+    words = [word for word in tokens if not word in stopwords]
+    return words
+
+def filter_eng_stopwords(tokens, path):
+    stopwords = build_stopwords(path)
     words = [word for word in tokens if not word in stopwords]
     return words
 
@@ -70,7 +75,8 @@ def clean_rawtext(sentence, stopwords):
     tokens = [token.lower() for token in tokens]
     tokens = filter_punctuations(tokens)
     tokens = filter_non_alphabet(tokens)
-    tokens = filter_stopwords(tokens, stopwords)
+    tokens = filter_indo_stopwords(tokens, stopwords)
+    tokens = filter_eng_stopwords(tokens, 'stopwords-en.txt')
     return tokens
 
 
