@@ -11,6 +11,11 @@ logging.basicConfig(format="%(levelname)s - %(asctime)s: %(message)s", datefmt='
 stopwords = build_stopwords(STWORDS)
 all_sentences = load_all_sentences(stopwords)
 
+# for sentence in all_sentences:
+#     if 'binguuuung' in all_sentences:
+#         print(sentence)
+
+
 max_len = max([len(sentence) for sentence in all_sentences])
 
 with open('max_len.bin', 'wb+') as f:
@@ -18,7 +23,7 @@ with open('max_len.bin', 'wb+') as f:
 
 cores = multiprocessing.cpu_count()
 
-w2v_model  = Word2Vec(min_count=10,window=2,size=300,sample=6e-5,alpha=0.01, min_alpha=0.0005,workers=cores-2)
+w2v_model  = Word2Vec(min_count=1,window=2,size=300,sample=6e-5,alpha=0.01, min_alpha=0.0005,workers=cores-2)
 
 w2v_model.build_vocab(sentences=all_sentences, progress_per=10000)
 

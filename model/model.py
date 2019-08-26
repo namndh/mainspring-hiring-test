@@ -22,8 +22,8 @@ class myModel(nn.Module):
     def forward(self, x):
 
         x = Variable(x)
-        print(x.shape)
-        x = x.unsqueeze(0)
+        # print(x.shape)
+        # x = x.unsqueeze(0)
         x = [F.relu(conv(x)).squeeze(3) for conv in self.conv_layers]
         x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x]
         x = torch.cat(x,1)
