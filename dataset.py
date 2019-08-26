@@ -16,7 +16,7 @@ def padding_text(max_len, sentence):
 
 
 class CommentDataset(Dataset):
-    def __init__(self, bin_file, root_dir, word2vec_model_file, max_len,  transform=None):
+    def __init__(self, bin_file, word2vec_model_file, max_len, root_dir=None, transform=None):
         assert os.path.isfile(bin_file), 'Dataset is not existed!'
         assert bin_file.endswith('.bin'), 'Invalid file format!'
         assert os.path.isfile(word2vec_model_file), 'Word2vec model is '

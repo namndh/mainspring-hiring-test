@@ -6,8 +6,6 @@ DATA_DIR = os.path.join(ROOT_DIR, 'data')
 DICT = os.path.join(DATA_DIR,'dicts/id_full.txt')
 STWORDS = os.path.join(DATA_DIR,'dicts/stop_words.txt')
 
-
-
 TRAINING_DIR = os.path.join(DATA_DIR,'training_data')
 TRAINING_NORMAL_CMT = os.path.join(TRAINING_DIR,'normal_comments.txt')
 TRAINING_SARA_CMT = os.path.join(TRAINING_DIR,'sara_comments.txt')
@@ -19,8 +17,9 @@ TEST_SARA_CMT = os.path.join(TEST_DATA,'sara_comments.txt')
 DATASETS = os.path.join(ROOT_DIR,'datasets')
 if not os.path.isdir(DATASETS):
     os.mkdir(DATASETS)
-TRAINING_DATASET = os.path.join(DATASETS,'training_dataset.bin')
-TESTING_DATASET = os.path.join(DATASETS,'testing_dataset.bin')
+TRAIN_DATASET = os.path.join(DATASETS, 'train_dataset.bin')
+VAL_DATASET = os.path.join(DATASETS, 'val_dataset.bin')
+TEST_DATASET = os.path.join(DATASETS, 'test_dataset.bin')
 
 
 MAX_LEN = []

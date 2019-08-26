@@ -59,6 +59,7 @@ def filter_indo_stopwords(tokens, stopwords):
     words = [word for word in tokens if not word in stopwords]
     return words
 
+
 def filter_eng_stopwords(tokens, path):
     stopwords = build_stopwords(path)
     words = [word for word in tokens if not word in stopwords]
@@ -91,7 +92,8 @@ def load_dataset(nm_cmts_path, sr_cmts_path, stopwords):
         for line in lines:
             line = line.replace('\n','')
             tokens = clean_rawtext(line, stopwords)
-            nm_cmts.append([0,tokens])
+            if len(tokens) > 0:
+                nm_cmts.append([0, tokens])
     print(len(nm_cmts))
     sr_cmts = []
     with open(sr_cmts_path, 'r') as f:
@@ -100,17 +102,30 @@ def load_dataset(nm_cmts_path, sr_cmts_path, stopwords):
         for line in lines:
             line = line.replace('\n','')
             tokens = clean_rawtext(line, stopwords)
-            sr_cmts.append([0,tokens])
+            if len(tokens) > 0:
+                sr_cmts.append([1, tokens])
     print(len(sr_cmts))
     dataset = nm_cmts + sr_cmts
     shuffle(dataset)
     return dataset
 
-dicts = build_dict(DICT)
-stopwords = build_stopwords(STWORDS)
-training_set = load_dataset(TRAINING_NORMAL_CMT,TRAINING_SARA_CMT,stopwords)
-with open(TRAINING_DATASET, 'wb+') as f:
-    pickle.dump(training_set,f)
-testing_set = load_dataset(TEST_NORMAL_CMT,TEST_SARA_CMT, stopwords)
-with open(TESTING_DATASET, 'wb+') as f:
-    pickle.dump(testing_set,f)
+
+if __name__ == '__main__':
+    dicts = build_dict(DICT)
+    stopwords = build_stopwords(STWORDS)
+    training_set = load_dataset(TRAINING_NORMAL_CMT, TRAINING_SARA_CMT, stopwords)
+    shuffle(training_set)
+    train_set = []
+    val_set = []
+    for i in range(int(len(training_set)*0.8)):
+        train_set.append(training_set[i])
+    for i in range(int(len(training_set)*0.8), len(training_set)):
+        val_set.append(training_set[i])
+    with open(TRAIN_DATASET, 'wb+') as f:
+        pickle.dump(train_set, f)
+    with open(VAL_DATASET, 'wb+') as f:
+        pickle.dump(val_set, f)
+
+    testing_set = load_dataset(TEST_NORMAL_CMT,TEST_SARA_CMT, stopwords)
+    with open(TEST_DATASET, 'wb+') as f:
+        pickle.dump(testing_set, f)
