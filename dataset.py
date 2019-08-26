@@ -35,6 +35,7 @@ class CommentDataset(Dataset):
     def __getitem__(self, idx):
         item = self.data[idx]
         label = item[0]
+        # label = torch.from_numpy(label).type(torch.FloatTensor)
         sentence = item[1]
         sentence_vector = []
         if not len(sentence) > 0:
@@ -54,8 +55,7 @@ class CommentDataset(Dataset):
         
         if sentence_vector.shape[0] > self.max_len:
             exit(100)
-        sentence_vector = torch.from_numpy(sentence_vector)
-        sentence_vector.float()
+        sentence_vector = torch.from_numpy(sentence_vector).type(torch.DoubleTensor)
         sentence_vector = sentence_vector.unsqueeze(0)
 
         
