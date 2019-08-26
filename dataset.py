@@ -16,13 +16,13 @@ def padding_text(max_len, sentence):
 
 
 class CommentDataset(Dataset):
-    def __init__(self, bin_file, word2vec_model_file, max_len, root_dir=None, transform=None):
+    def __init__(self, bin_file, word2vec_model_file, max_len, transform=None):
         assert os.path.isfile(bin_file), 'Dataset is not existed!'
         assert bin_file.endswith('.bin'), 'Invalid file format!'
         assert os.path.isfile(word2vec_model_file), 'Word2vec model is '
         with open(bin_file, 'rb') as f:
             self.data = pickle.load(f)
-        self.root_dir = root_dir
+        
         self.transform = transform
         self.word2vec = Word2Vec.load(word2vec_model_file)
         self.max_len = max_len
@@ -58,26 +58,3 @@ class CommentDataset(Dataset):
             sentence_vector = self.transform(sentence_vector)
         print(sentence_vector)
         return (sentence_vector, label)
-
-# with open('max_len.bin', 'rb') as f:
-#     max_len = pickle.load(f)
-#
-# # #
-# # model = Word2Vec.load('model.bin')
-# #
-# # print(model['kaya'])
-# # data_transform = transforms.Compose([transforms.ToTensor()])
-#
-# train_dataset = CommentDataset('datasets/training_dataset.bin', '', 'model.bin', int(max_len[0]))
-# print(len(train_dataset))
-# # print(sentence)
-# sample = train_dataset[10]
-#
-#
-# print(sample[0].shape)
-# net = myModel().to('cpu')
-# net.double()
-# print(net)
-# # print(net.dropout)
-# net.forward(sample[0])
-# # print(net)

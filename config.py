@@ -17,9 +17,9 @@ TEST_SARA_CMT = os.path.join(TEST_DATA,'sara_comments.txt')
 DATASETS = os.path.join(ROOT_DIR,'datasets')
 if not os.path.isdir(DATASETS):
     os.mkdir(DATASETS)
-TRAIN_DATASET = os.path.join(DATASETS, 'train_dataset.bin')
+TRAIN_DATASET = os.path.join(DATASETS,'train_dataset.bin')
 VAL_DATASET = os.path.join(DATASETS, 'val_dataset.bin')
-TEST_DATASET = os.path.join(DATASETS, 'test_dataset.bin')
+TEST_DATASET = os.path.join(DATASETS,'test_dataset.bin')
 
-
-MAX_LEN = []
+WORD2VEC_MODEL_FILE = os.path.join(ROOT_DIR, 'word2vec.bin')
+MAX_LEN_FILE = os.path.join(ROOT_DIR, 'max_len.bin')

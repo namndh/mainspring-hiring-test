@@ -109,23 +109,21 @@ def load_dataset(nm_cmts_path, sr_cmts_path, stopwords):
     shuffle(dataset)
     return dataset
 
-
 if __name__ == '__main__':
     dicts = build_dict(DICT)
     stopwords = build_stopwords(STWORDS)
     training_set = load_dataset(TRAINING_NORMAL_CMT, TRAINING_SARA_CMT, stopwords)
     shuffle(training_set)
-    train_set = []
-    val_set = []
-    for i in range(int(len(training_set)*0.8)):
-        train_set.append(training_set[i])
-    for i in range(int(len(training_set)*0.8), len(training_set)):
-        val_set.append(training_set[i])
+    pivot = int(len(training_set)*0.8)
+
+    train_set = training_set[:pivot]
+    val_set = training_set[pivot:]
+
     with open(TRAIN_DATASET, 'wb+') as f:
         pickle.dump(train_set, f)
     with open(VAL_DATASET, 'wb+') as f:
         pickle.dump(val_set, f)
 
-    testing_set = load_dataset(TEST_NORMAL_CMT,TEST_SARA_CMT, stopwords)
+    testing_set = load_dataset(TEST_NORMAL_CMT, TEST_SARA_CMT, stopwords)
     with open(TEST_DATASET, 'wb+') as f:
         pickle.dump(testing_set, f)

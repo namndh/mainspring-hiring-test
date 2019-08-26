@@ -24,4 +24,4 @@ w2v_model.build_vocab(sentences=all_sentences, progress_per=10000)
 
 w2v_model.train(all_sentences, total_examples=w2v_model.corpus_count, epochs=100, report_delay=1)
 
-w2v_model.save('model.bin')
+w2v_model.save('word2vec.bin')
