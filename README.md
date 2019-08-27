@@ -42,6 +42,7 @@
     - Move the downloaded file to ```weights``` folder
 - Install nltk:
     - ``` python install_nltk.py```
+- Download ```data.zip``` file and unzip in project folder
 #### Usage:
 - Generate train,test,val sets:
     - ```python raw_data_process.py```
