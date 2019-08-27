@@ -27,6 +27,9 @@ def train(opts):
 
     init_seeds(42)
     wdir = os.path.join(ROOT_DIR, 'weights')
+    if not opts.resume and not os.path.isdir(wdir):
+        os.mkdir(wdir)
+
     best_weight = os.path.join(wdir, 'best.pt')
     last_weight = os.path.join(wdir, 'last.pt')
 
@@ -35,12 +38,11 @@ def train(opts):
     model = myModel()
     model.double()
     model.to(device)
-    optimizer = optim.SGD(model.parameters(), lr=opts.lr)
+    optimizer = optim.SGD(model.parameters(), lr=opts.lr, momentum=opts.momentum, weight_decay=opts.weight_decay)
     criterion = nn.CrossEntropyLoss()
 
     start_epoch = 0
     best_fitness = 0
-
     if opts.resume:
         assert os.path.isdir(wdir), 'weight folder does not exist!'
         assert os.path.isfile(last_weight), 'the laster weight file does not exist!'
@@ -64,20 +66,14 @@ def train(opts):
 
     train_dataset = CommentDataset(TRAIN_DATASET,WORD2VEC_MODEL_FILE, MAX_LEN_FILE)
     val_dataset = CommentDataset(VAL_DATASET, WORD2VEC_MODEL_FILE, MAX_LEN_FILE)
-    test_dataset = CommentDataset(TEST_DATASET, WORD2VEC_MODEL_FILE, MAX_LEN_FILE)
-
-    # print(train_dataset[540],train_dataset[541],train_dataset[542])
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, num_workers=min(os.cpu_count(), batch_size), shuffle=False, pin_memory=True)
     val_loader = DataLoader(val_dataset, batch_size=64, num_workers=min(os.cpu_count(), batch_size), shuffle=False, pin_memory=True)
-    test_loadder = DataLoader(test_dataset, batch_size=64, num_workers=min(os.cpu_count(), batch_size), shuffle=False, pin_memory=True)
-
-    # dtype1 = torch.cuda.DoubleTensor if torch.cuda.is_available() else torch.DoubleTensor
-    # dtype2 = torch.cuda.LongTensor if torch.cuda.is_available() else torch.LongTensor
 
     for epoch in range(start_epoch, epochs):
+        save_best = False
+        
         model.train()
-
         train_loss = 0 
         train_acc = 0    
         print('\n\nTraining...')
@@ -98,8 +94,8 @@ def train(opts):
             train_loss += loss.item()
             train_acc += (preds.argmax(1) == labels).sum().item()
 
-        s_train = "Epoch: {} || Train Loss: {:.3f} || Train Acc: {:.3f} ".format(
-            epoch+1, train_loss/len(train_dataset), train_acc/len(train_dataset))
+        s_train = "Epoch: {} || Train Loss: {:.6f} ".format(
+            epoch+1, train_loss/len(train_dataset))
 
         pbar.set_description(s_train)
         print(s_train)
@@ -116,10 +112,12 @@ def train(opts):
                 loss = criterion(preds, labels)
                 val_loss += loss.item()
                 val_acc += (preds.argmax(1) == labels).sum().item()
-        s_val = "Epoch: {} || Val Loss: {:.3f} || Val Acc: {:.3f} ".format(
+        s_val = "Epoch: {} || Val Loss: {:.6f} || Val Acc: {:.3f} ".format(
             epoch+1, val_loss/len(val_dataset), val_acc/len(val_dataset))
         print(s_val)
         if best_fitness < val_acc:
+            save_best = True
+            print('Saving...')
             best_fitness = val_acc
             chkpt = {'epoch':epoch, 
                      'best_fitness':best_fitness,
@@ -133,6 +131,13 @@ def train(opts):
         if epoch > 0:
             scheduler.step()
 
+        if opts.save_result:
+            with open('train_result.txt', 'a+') as f:
+                f.write(s_train + '\n')
+                if save_best:
+                    f.write('Saved at:\n')
+                f.write(s_val + '\n\n')
+
     torch.cuda.empty_cache()
     
 
@@ -140,10 +145,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--epochs', type=int, default=250)
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--lr', type=float, default=0.05, help='learning rate')
-    parser.add_argument('--momentum', type=bool, default=True, help='use momentum in SGD')
+    parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
+    parser.add_argument('--momentum', type=int, default=0.9, help='use momentum in SGD')
     parser.add_argument('--weight_decay', type=float, default=0, help='weight decay in SGD')
     parser.add_argument('--resume', action='store_true', help='resume training')
+    parser.add_argument('--save_result', action='store_true', help='save results in txt files')
     opts = parser.parse_args()
     print(opts)
     train(opts)

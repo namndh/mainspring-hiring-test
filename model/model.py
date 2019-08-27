@@ -19,21 +19,18 @@ class myModel(nn.Module):
         self.leakyRelu = nn.LeakyReLU(0.2, inplace=True)
         self.dropout = nn.Dropout(DROP_OUT)
         self.fc1 = nn.Linear(len(KERNEL_SIZES)*KERNEL_NUMS, 256)
-        self.fc2 = nn.Linear(256, 64)
-        self.fc3 = nn.Linear(64, 2)
         self.softmax = nn.Softmax(dim=1)
     def forward(self, x):
 
         x = Variable(x, requires_grad=True)
-        # print(x.shape)
-        # x = x.unsqueeze(0)
-        x = [self.leakyRelu(conv(x)).squeeze(3) for conv in self.conv_layers]
+    
+        x = [F.relu(conv(x)).squeeze(3) for conv in self.conv_layers]
         x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x]
         x = torch.cat(x,1)
-        # x = self.dropout(x)
+        x = self.dropout(x)
         x = self.fc1(x)
-        x = self.fc2(x)
-        x = self.fc3(x)
-        x = self.softmax(x)
+        
+        if not self.training:
+            x = self.softmax(x)
 
         return x
