@@ -6,7 +6,7 @@
     - Tokenize sentence to words list
     - Filter Indonesian stopwords
     - Filter English stopwords
-    - Filter non-alphabet characters
+    - Filter non-alphabet characters and punctuations
 
 - Word Embedding: Using Word2Vec to vectorize sentence:
     - Train a Word2Vec model on all sentences in train and test set
