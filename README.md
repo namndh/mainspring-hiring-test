@@ -20,7 +20,7 @@
         - Learning rate: 0.01
         - Optimizer SGD with momentum: 0.9
         - Batch size: 64, epochs: 250
-        - Early stopping using validation accuracy
+        - Save the model which provide the highest validation accuracy
     - Training: Get the best result at epoch 29-th:
         ```
            Epoch: 29 || Train Loss: 0.004787 
